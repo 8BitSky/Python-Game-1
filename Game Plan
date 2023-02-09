@@ -4,8 +4,15 @@ from pygame.locals import QUIT
 #Global Setup
 pygame.init()
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280,720
-DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Asteroid')
+clock = pygame.time.Clock()
+
+#Ship
+ship_surface = pygame.Surface((70,100))
+ship_rect = ship_surface.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
+ship_y_pos = 300
+ship_x_pos = 600
 
 #Game Loop
 while True:
@@ -15,11 +22,19 @@ while True:
             pygame.quit()
             sys.exit()
     
+    clock.tick(100)
+    
     #Section 1 - Sprites & Surfaces
             #Background, Player, Incoming Objects, Projectile, Text
+    display_surface.fill((0,0,0))
+    ship_surface.fill((255,255,255))
+    display_surface.blit(ship_surface,ship_rect)
+            
             
     #Section 2 - Inputs & Controls (Interaction)
             #Movement (Mouse), Buttons (Projectiles)
+    ship_rect.y += 1  
+    ship_rect.x += 1
 
     #Section 3 - Game Logic & Updates (Gameplay)
             #Mandatory: Movement Code Player, List for Asteroids, Iteration, Collisions
