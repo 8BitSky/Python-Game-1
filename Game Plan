@@ -9,10 +9,12 @@ pygame.display.set_caption('Asteroid')
 clock = pygame.time.Clock()
 
 #Ship
-ship_surface = pygame.Surface((70,100))
+#ship_surface = pygame.Surface((70,100))
+ship_surface = pygame.image.load('../sprites/ship.png').convert_alpha()
 ship_rect = ship_surface.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
-ship_y_pos = 300
-ship_x_pos = 600
+
+#BG
+bg_surface = pygame.image.load('../sprites/bg.png').convert()
 
 #Game Loop
 while True:
@@ -22,19 +24,23 @@ while True:
             pygame.quit()
             sys.exit()
     
-    clock.tick(100)
+    clock.tick(200)
     
     #Section 1 - Sprites & Surfaces
             #Background, Player, Incoming Objects, Projectile, Text
     display_surface.fill((0,0,0))
-    ship_surface.fill((255,255,255))
+    display_surface.blit(bg_surface,(0,0))
+    #ship_surface.fill((255,255,255))
     display_surface.blit(ship_surface,ship_rect)
             
             
     #Section 2 - Inputs & Controls (Interaction)
             #Movement (Mouse), Buttons (Projectiles)
-    ship_rect.y += 1  
-    ship_rect.x += 1
+    #ship_rect.y += 1  
+    #ship_rect.x += 1
+    
+    ship_rect.center = pygame.mouse.get_pos()
+    
 
     #Section 3 - Game Logic & Updates (Gameplay)
             #Mandatory: Movement Code Player, List for Asteroids, Iteration, Collisions
