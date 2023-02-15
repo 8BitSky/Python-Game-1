@@ -11,15 +11,25 @@ display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Asteroid')
 clock = pygame.time.Clock()
 
+#Functions
+def laser_update(laser_list, speed):
+    for rect in laser_list:
+        rect.y -= speed;
+        if rect.bottom < 0:
+            laser_list.remove(rect)
+    
+
+
 #Ship
 #ship_surface = pygame.Surface((70,100))
 ship_surface = pygame.image.load('../sprites/single_ship.png').convert_alpha()
-ship_surface_scaled = pygame.transform.scale(ship_surface,(32,32))
-ship_rect = ship_surface.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
+ship_surface_scaled = pygame.transform.scale(ship_surface,(64,64))
+ship_rect = ship_surface_scaled.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
 
 #Laser
 laser_surface = pygame.image.load('../sprites/single_laser.png').convert()
-laser_rect = laser_surface.get_rect(center = ship_rect.center)
+#laser_rect = laser_surface.get_rect(center = ship_rect.center)
+laser_list = []
 
 #BG
 bg_surface = pygame.image.load('../sprites/bg.png').convert()
@@ -36,8 +46,10 @@ while True:
             sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                display_surface.blit(laser_surface,ship_rect.center)
-    
+                laser_rect = laser_surface.get_rect(midbottom = ship_rect.midtop)
+                laser_list.append(laser_rect)
+                
+                
     clock.tick(200)
     
     #Section 1 - Sprites & Surfaces
@@ -51,12 +63,14 @@ while True:
     #Section 2 - Inputs & Controls (Interaction)
             #Movement (Mouse), Buttons (Projectiles)
     ship_rect.center = pygame.mouse.get_pos()
-    laser_rect.y -= 1
+    #laser_rect.y -= 1
 
     #Section 3 - Game Logic & Updates (Gameplay)
             #Mandatory: Movement Code Player, List for Asteroids, Iteration, Collisions
             #Extras: Score, Lives, Splits?, Audio?
-            
+    laser_update(laser_list, 10)
+    for rect in laser_list:
+        display_surface.blit(laser_surface,rect)
 
     #Final Visual Update To User
     pygame.display.update()
