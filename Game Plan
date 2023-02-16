@@ -3,6 +3,7 @@
 
 import pygame, sys
 from pygame.locals import QUIT
+from random import randint, uniform
 
 #Global Setup
 pygame.init()
@@ -17,7 +18,15 @@ def laser_update(laser_list, speed):
         rect.y -= speed;
         if rect.bottom < 0:
             laser_list.remove(rect)
-    
+def asteroid_update(asteroid_list, speed = 1):
+    for asteroid_tuple in asteroid_list:
+        direction = asteroid_tuple[1]
+        asteroid_rect = asteroid_tuple[0]
+        asteroid_rect.center += direction * speed
+        if asteroid_rect.top > WINDOW_HEIGHT:
+            asteroid_list.remove(asteroid_tuple)
+ 
+ 
 #Ship
 #ship_surface = pygame.Surface((70,100))
 ship_surface = pygame.image.load('../sprites/single_ship.png').convert_alpha()
@@ -37,7 +46,10 @@ asteroid_list = []
 bg_surface = pygame.image.load('../sprites/bg.png').convert()
 
 #Disable Mouse
+
 pygame.mouse.set_visible(False)
+asteroid_timer = pygame.event.custom_type()
+pygame.time.set_timer(asteroid_timer, 500) #Asteroid Spawn Rate
 
 #Game Loop
 while True:
@@ -53,8 +65,11 @@ while True:
                 
         if event.type == asteroid_timer:         
             #Logic For Asteroid, append to our list
-            
-            
+            pos_x = randint(-100,WINDOW_WIDTH+100)
+            pos_y = randint(-100, -50)
+            asteroid_rect = asteroid_surface.get_rect(center = (pos_x,pos_y))
+            direction = pygame.math.Vector2(uniform(-0.5,0.5),1)
+            asteroid_list.append((asteroid_rect,direction))
             
     clock.tick(200)
     
@@ -75,8 +90,28 @@ while True:
             #Mandatory: Movement Code Player, List for Asteroids, Iteration, Collisions
             #Extras: Score, Lives, Splits?, Audio?
     laser_update(laser_list, 10)
+    asteroid_update(asteroid_list)
+    #Ship Collision
+    for asteroid_tuple in asteroid_list:
+        asteroid_rect = asteroid_tuple[0]
+        if ship_rect.colliderect(asteroid_rect):
+            pygame.quit()
+            sys.exit()
+            
+    #Laser Collision
+    for asteroid_tuple in asteroid_list:
+        for laser_rect in laser_list:
+            if asteroid_tuple[0].colliderect(laser_rect):
+                asteroid_list.remove(asteroid_tuple)
+                laser_list.remove(laser_rect)
+
     for rect in laser_list:
-        display_surface.blit(laser_surface,rect)
+        display_surface.blit(laser_surface,rect)    
+    for asteroid_tuple in asteroid_list:
+        display_surface.blit(asteroid_surface,asteroid_tuple[0])
+    
+     
 
     #Final Visual Update To User
     pygame.display.update()
+
