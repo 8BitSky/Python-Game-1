@@ -18,8 +18,6 @@ def laser_update(laser_list, speed):
         if rect.bottom < 0:
             laser_list.remove(rect)
     
-
-
 #Ship
 #ship_surface = pygame.Surface((70,100))
 ship_surface = pygame.image.load('../sprites/single_ship.png').convert_alpha()
@@ -30,6 +28,10 @@ ship_rect = ship_surface_scaled.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT
 laser_surface = pygame.image.load('../sprites/single_laser.png').convert()
 #laser_rect = laser_surface.get_rect(center = ship_rect.center)
 laser_list = []
+
+#Asteroid
+asteroid_surface = pygame.image.load('../sprites/asteroid.png').convert()
+asteroid_list = []
 
 #BG
 bg_surface = pygame.image.load('../sprites/bg.png').convert()
@@ -49,7 +51,11 @@ while True:
                 laser_rect = laser_surface.get_rect(midbottom = ship_rect.midtop)
                 laser_list.append(laser_rect)
                 
-                
+        if event.type == asteroid_timer:         
+            #Logic For Asteroid, append to our list
+            
+            
+            
     clock.tick(200)
     
     #Section 1 - Sprites & Surfaces
