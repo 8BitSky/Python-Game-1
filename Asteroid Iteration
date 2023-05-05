@@ -26,6 +26,8 @@ laser_sound = pygame.mixer.Sound("./audio/laser_sound.mp3")
 explode_sound = pygame.mixer.Sound("./audio/explode.mp3")
 background_sound = pygame.mixer.Sound("./audio/background_sound.mp3")
 background_sound.play(loops = -1)
+#Text Files
+large_font = pygame.font.SysFont("comicsans", 30)
 
 #Laser Variables
 cooldown_interval = 500
@@ -62,10 +64,24 @@ def asteroid_update(asteroid_list, speed=1):
         if asteroid_rect.top > SCREEN_H:
             asteroid_list.remove(asteroid_tuple)
             
+def updateFile():
+   f = open("scores.txt","r")
+   file = f.readlines()
+   last= int(file[0])
+   
+   if last < int(current_score):
+       f.close()
+       file = open("scores.txt","w")
+       file.write(str(current_score))
+       file.close()
+       return current_score
+    
+   return last
 
 #def MousePosition():
 #  print(pygame.mouse.get_pos())
-
+current_score = 0
+high_score = 0
 asteroid_spawn_rate = 500
 asteroid_timer = pygame.event.custom_type()
 pygame.time.set_timer(asteroid_timer, asteroid_spawn_rate)
@@ -112,6 +128,7 @@ while True:
       for laser_rect in laser_list:
           if asteroid_tuple[0].colliderect(laser_rect):
               asteroid_list.remove(asteroid_tuple)
+              current_score = current_score + 1
               explode_sound.play()
               laser_list.remove(laser_rect)
   
@@ -127,8 +144,9 @@ while True:
       display_surface.blit(laser,rect)
   for asteroid_tuple in asteroid_list:
       display_surface.blit(asteroid, asteroid_tuple[0])
-
+  score_text = large_font.render("Score: " + str(current_score),1,(255,255,255))
+  high_score_text = large_font.render("High Score: " + str(updateFile()),1,(255,255,255))
+  display_surface.blit(high_score_text, (SCREEN_W/2 - high_score_text.get_width()/2,50))
+  display_surface.blit(score_text, (SCREEN_W/2 - score_text.get_width()/2,SCREEN_H - 50))
   pygame.display.update()
-
-
 
